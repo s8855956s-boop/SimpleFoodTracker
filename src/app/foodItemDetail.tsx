@@ -1,7 +1,7 @@
-import FoodPage from "@/screens/foodPage";
+import FoodItemDetailScreen from "@/screens/foodItemDetailScreen";
 import { View } from "react-native";
 
-export default function Index() {
+export default function FoodItemDetail() {
   return (
     <View
       style={{
@@ -11,7 +11,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <FoodPage />
+      <FoodItemDetailScreen />
     </View>
   );
 }

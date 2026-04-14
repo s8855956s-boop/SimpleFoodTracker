@@ -3,17 +3,27 @@ import FoodLog from "./components/foodLog";
 
 export default function FoodPage() {
   return (
-    <View style={style.container}>
-      <FoodLog title="Breakfast" />
+    <View style={styles.container}>
+      <FoodLog title="早餐" totalCalories={300} foodItems={["燕麥", "香蕉"]} />
+      <View style={styles.separator} />
+      <FoodLog title="午餐" />
+      <View style={styles.separator} />
+      <FoodLog title="晚餐" />
     </View>
   );
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#e4e4e4",
+    borderRadius: 10,
+    backgroundColor: "#fff",
     padding: 10,
-    height: "100%",
-    width: "100%",
+    marginTop: "10%",
+    width: "90%",
+  },
+  separator: {
+    height: 1,
+    backgroundColor: "#848484",
+    marginVertical: 4,
   },
 });

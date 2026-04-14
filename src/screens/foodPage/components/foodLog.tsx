@@ -1,46 +1,75 @@
-import { StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type FoodLogProps = {
   title: string;
+  totalCalories?: number;
+  foodItems?: string[];
 };
 
 export default function FoodLog(props: FoodLogProps) {
+  const router = useRouter();
+
   return (
-    <View style={style.container}>
-      <View style={style.circle}>
-        <Text>0</Text>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => router.push("/foodItemPage")}
+    >
+      <View style={styles.circle}>
+        <Text>{props.totalCalories?.toString() || "0"}</Text>
         <Text>大卡</Text>
       </View>
-      <View>
-        <Text style={style.titleContainer}>{props.title}</Text>
+      <View style={styles.titleContainer}>
+        <Text>{props.title}</Text>
+        <Text style={styles.subTitle}>{props.foodItems?.join(", ") || ""}</Text>
       </View>
-      <Text style={style.addButton}>+</Text>
-    </View>
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => router.push("/foodItemPage")}
+      >
+        <Text style={styles.addButtonText}>+</Text>
+      </TouchableOpacity>
+    </TouchableOpacity>
   );
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
-    borderRadius: 10,
-    backgroundColor: "#fff",
     padding: 10,
     flexDirection: "row",
     alignItems: "center",
   },
   circle: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     backgroundColor: "#e4e4e4",
-    borderRadius: "50%",
-    height: 55,
-    width: 55,
     justifyContent: "center",
     alignItems: "center",
-    flexDirection: "column",
     marginRight: 10,
   },
   titleContainer: {
-    width: 250,
+    flexDirection: "column",
+    flex: 1,
+    minWidth: 0,
+  },
+  subTitle: {
+    color: "#6b7280",
+    fontSize: 12,
   },
   addButton: {
-    fontSize: 30,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#111827",
+    marginLeft: 10,
+  },
+  addButtonText: {
+    color: "#FFFFFF",
+    fontSize: 22,
+    fontWeight: "700",
+    lineHeight: 22,
   },
 });
