@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import FoodItem from "./components/foodItem";
+import FoodItemPage from "./components/foodItemPage";
 
 type FoodItemObj = {
   title: string;
@@ -68,7 +68,7 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
       </View>
       <View style={styles.foodItemContainer}>
         {visibleItems?.map((item, index) => (
-          <FoodItem
+          <FoodItemPage
             key={index}
             title={item.title}
             details={`${item.calories * item.servings}大卡、${item.servings || 0}份量`}

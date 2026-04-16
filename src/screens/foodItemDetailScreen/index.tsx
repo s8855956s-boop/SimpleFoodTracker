@@ -1,18 +1,15 @@
+import { FoodItem } from "@/type/type";
+import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import NutritionFactsBox from "./component/nutritionFactsBox";
 import PortionBox from "./component/portionBox";
 
-type FoodItemDetails = {
-  name: string;
-  calories: number;
-  totalFat: number;
-  totalCarb: number;
-  protein: number;
-};
-
 export default function FoodItemDetailScreen() {
-  const foodItem: FoodItemDetails = {
+  const [unit, setUnit] = useState<"grams" | "servings">("servings");
+
+  const foodItem: FoodItem = {
     name: "備餐",
+    gramsPerServing: 100,
     calories: 721,
     totalCarb: 71.3,
     totalFat: 25.9,
@@ -22,6 +19,9 @@ export default function FoodItemDetailScreen() {
   return (
     <View style={styles.container}>
       <PortionBox
+        unit={unit}
+        handleUnitChange={setUnit}
+        gramsPerServing={foodItem.gramsPerServing}
         foodTitle={foodItem.name}
         calories={foodItem.calories}
         totalCarb={foodItem.totalCarb}
@@ -40,9 +40,6 @@ export default function FoodItemDetailScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#e4e4e4",
-    flex: 1,
-    // justifyContent: "center",
     alignItems: "center",
   },
 });

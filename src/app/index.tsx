@@ -3,14 +3,7 @@ import { View } from "react-native";
 
 export default function Index() {
   return (
-    <View
-      style={{
-        backgroundColor: "#e4e4e4",
-        flex: 1,
-        // justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <View>
       <FoodPage />
     </View>
   );

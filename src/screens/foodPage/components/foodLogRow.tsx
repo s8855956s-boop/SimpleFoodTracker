@@ -7,7 +7,7 @@ type FoodLogProps = {
   foodItems?: string[];
 };
 
-export default function FoodLog(props: FoodLogProps) {
+export default function FoodLogRow(props: FoodLogProps) {
   const router = useRouter();
 
   return (

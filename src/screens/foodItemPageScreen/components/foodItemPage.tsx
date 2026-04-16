@@ -1,10 +1,10 @@
 import { useRouter } from "expo-router";
 import {
-    Pressable,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 type FoodItemProps = {
@@ -15,7 +15,7 @@ type FoodItemProps = {
   onToggle?: () => void;
 };
 
-export default function FoodItem(props: FoodItemProps) {
+export default function FoodItemPage(props: FoodItemProps) {
   const router = useRouter();
 
   return (

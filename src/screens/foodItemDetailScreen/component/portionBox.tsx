@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 
 type PortionBoxProps = {
+  unit: "grams" | "servings";
+  handleUnitChange: (newUnit: "grams" | "servings") => void;
+  portion?: number;
+  gramsPerServing: number;
   foodTitle: string;
   calories: number;
   totalCarb: number;
@@ -13,16 +17,22 @@ type PortionBoxProps = {
 };
 
 export default function PortionBox(props: PortionBoxProps) {
-  const [portion, setPortion] = useState(1.0);
+  const [portion, setPortion] = useState(
+    props.portion
+      ? props.portion
+      : props.unit === "servings"
+        ? 1.0
+        : props.gramsPerServing,
+  );
   const [previousValue, setPreviousValue] = useState(1.0);
   const [portionInputValue, setPortionInputValue] = useState("1.0");
-  const [unit, setUnit] = useState("serving");
+  const unit = props.unit;
 
   useEffect(() => {
-    if (unit === "serving") {
+    if (unit === "servings") {
       setPortion(1.0);
       setPortionInputValue("1.0");
-    } else if (unit === "gram") {
+    } else if (unit === "grams") {
       setPortion(100.0);
       setPortionInputValue("100.0");
     }
@@ -56,7 +66,7 @@ export default function PortionBox(props: PortionBoxProps) {
   };
 
   const handleChange = (text: string) => {
-    if (/^\d{0,2}(\.\d?)?$/.test(text)) {
+    if (/^\d*(\.\d?)?$/.test(text)) {
       setPortionInputValue(text);
     }
   };
@@ -71,6 +81,15 @@ export default function PortionBox(props: PortionBoxProps) {
 
   const formatNutritionValue = (value: number) => {
     return Number.isInteger(value) ? value.toString() : value.toFixed(2);
+  };
+
+  const calculateNutrition = (value: number) => {
+    if (unit === "servings") {
+      return value * portion;
+    } else if (unit === "grams") {
+      return (value / props.gramsPerServing) * portion;
+    }
+    return 0;
   };
 
   return (
@@ -94,16 +113,16 @@ export default function PortionBox(props: PortionBoxProps) {
       <Picker
         style={styles.picker}
         selectedValue={unit}
-        onValueChange={(itemValue) => setUnit(itemValue)}
+        onValueChange={(itemValue) => props.handleUnitChange(itemValue)}
       >
-        <Picker.Item label="Serving" value="serving" />
-        <Picker.Item label="Gram" value="gram" />
+        <Picker.Item label="份" value="servings" />
+        <Picker.Item label="公克" value="grams" />
       </Picker>
       <Text>
-        Calories: {formatNutritionValue(props.calories * portion)}, Carbs:{" "}
-        {formatNutritionValue(props.totalCarb * portion)}, Protein:{" "}
-        {formatNutritionValue(props.protein * portion)}, Fat:{" "}
-        {formatNutritionValue(props.totalFat * portion)}
+        熱量: {formatNutritionValue(calculateNutrition(props.calories))} 克,
+        碳水化合物: {formatNutritionValue(calculateNutrition(props.totalCarb))}{" "}
+        克, 蛋白質: {formatNutritionValue(calculateNutrition(props.protein))}{" "}
+        克, 脂肪: {formatNutritionValue(calculateNutrition(props.totalFat))} 克
       </Text>
     </View>
   );
