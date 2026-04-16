@@ -9,18 +9,57 @@ type FoodLogsContainerProps = {
 export default function FoodLogsContainer(props: FoodLogsContainerProps) {
   return (
     <View style={styles.container}>
-      {props.foodLogs.map((foodLog, index) => (
-        <View key={foodLog.title}>
-          <FoodLogRow
-            title={foodLog.title}
-            totalCalories={foodLog.totalCalories}
-            foodItems={foodLog.foodItems.map((foodItem) => foodItem.name)}
-          />
-          {index < props.foodLogs.length - 1 ? (
-            <View style={styles.separator} />
-          ) : null}
-        </View>
-      ))}
+      <FoodLogRow
+        title="早餐"
+        totalCalories={
+          props.foodLogs.filter((log) => log.title === "breakfast")[0]
+            ?.totalCalories || 0
+        }
+        foodItems={
+          props.foodLogs
+            .filter((log) => log.title === "breakfast")[0]
+            ?.foodItems.map((foodItem) => foodItem.name) || []
+        }
+      />
+      <View style={styles.separator} />
+      <FoodLogRow
+        title="午餐"
+        totalCalories={
+          props.foodLogs.filter((log) => log.title === "lunch")[0]
+            ?.totalCalories || 0
+        }
+        foodItems={
+          props.foodLogs
+            .filter((log) => log.title === "lunch")[0]
+            ?.foodItems.map((foodItem) => foodItem.name) || []
+        }
+      />
+      <View style={styles.separator} />
+      <FoodLogRow
+        title="晚餐"
+        totalCalories={
+          props.foodLogs.filter((log) => log.title === "dinner")[0]
+            ?.totalCalories || 0
+        }
+        foodItems={
+          props.foodLogs
+            .filter((log) => log.title === "dinner")[0]
+            ?.foodItems.map((foodItem) => foodItem.name) || []
+        }
+      />
+      <View style={styles.separator} />
+      <FoodLogRow
+        title="點心"
+        totalCalories={
+          props.foodLogs.filter((log) => log.title === "snack")[0]
+            ?.totalCalories || 0
+        }
+        foodItems={
+          props.foodLogs
+            .filter((log) => log.title === "snack")[0]
+            ?.foodItems.map((foodItem) => foodItem.name) || []
+        }
+      />
     </View>
   );
 }
