@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import FoodItemPage from "./components/foodItemPage";
@@ -34,8 +35,18 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
       ? foodItems.filter((item) => item.category === chosenTag)
       : foodItems;
 
+  const router = useRouter();
+
   return (
     <View style={styles.container}>
+      <View style={{ alignItems: "flex-end", marginBottom: 30 }}>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => router.push("/foodItemEdit")}
+        >
+          <Text style={styles.addButtonText}>新增食物 +</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.tagContainer}>
         <TouchableOpacity onPress={() => setChosenTag("favorite")}>
           <View
@@ -88,7 +99,7 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: "10%",
+    marginTop: "5%",
     width: "90%",
   },
   foodItemContainer: {
@@ -116,5 +127,20 @@ const styles = StyleSheet.create({
   activeTagText: {
     color: "#ffffff",
     fontWeight: "bold",
+  },
+  addButton: {
+    height: 36,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#111827",
+    marginLeft: 10,
+  },
+  addButtonText: {
+    color: "#FFFFFF",
+    fontSize: 22,
+    fontWeight: "700",
+    lineHeight: 22,
   },
 });
