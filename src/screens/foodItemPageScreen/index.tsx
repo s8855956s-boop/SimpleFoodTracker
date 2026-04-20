@@ -10,13 +10,14 @@ type FoodItemPageProps = {
 
 export default function FoodItemPageScreen(props: FoodItemPageProps) {
   const [chosenTag, setChosenTag] = useState("favorite");
+  const [toggleItemIds, setToggleItemIds] = useState<string[]>([]);
 
-  const toggleItem = (index: number) => {
-    // setFoodItems((prev) =>
-    // prev.map((item, i) =>
-    // i === index ? { ...item, selected: !item.selected } : item,
-    // ),
-    // );
+  const toggleItem = (id: string) => {
+    setToggleItemIds((prev) =>
+      prev.includes(id)
+        ? prev.filter((itemId) => itemId !== id)
+        : [...prev, id],
+    );
   };
 
   const visibleItems =
@@ -77,7 +78,8 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
             totalCarb={item.totalCarb}
             totalFat={item.totalFat}
             protein={item.protein}
-            // onToggle={() => toggleItem(index)}
+            selected={toggleItemIds.includes(item.id)}
+            onToggle={() => toggleItem(item.id)}
           />
         ))}
         {!visibleItems?.length && (
