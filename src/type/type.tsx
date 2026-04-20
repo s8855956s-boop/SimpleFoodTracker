@@ -1,4 +1,5 @@
 export type FoodItem = {
+  id: string;
   name: string;
   gramsPerServing: number;
   calories: number;
@@ -9,6 +10,7 @@ export type FoodItem = {
 };
 
 export type FoodLogItem = {
+  id: string;
   name: string;
   unit: "grams" | "servings";
   amount: number;

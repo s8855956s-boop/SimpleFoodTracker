@@ -1,39 +1,28 @@
+import { FoodItem } from "@/type/type";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import FoodItemPage from "./components/foodItemPage";
 
-type FoodItemObj = {
-  title: string;
-  calories: number;
-  servings: number;
-  selected?: boolean;
-  category: "favorite" | "myFood";
-};
-
 type FoodItemPageProps = {
-  foodItems?: FoodItemObj[];
+  foodItems: FoodItem[];
 };
 
 export default function FoodItemPageScreen(props: FoodItemPageProps) {
   const [chosenTag, setChosenTag] = useState("favorite");
 
-  const [foodItems, setFoodItems] = useState<FoodItemObj[]>(
-    props.foodItems ?? [],
-  );
-
   const toggleItem = (index: number) => {
-    setFoodItems((prev) =>
-      prev.map((item, i) =>
-        i === index ? { ...item, selected: !item.selected } : item,
-      ),
-    );
+    // setFoodItems((prev) =>
+    // prev.map((item, i) =>
+    // i === index ? { ...item, selected: !item.selected } : item,
+    // ),
+    // );
   };
 
   const visibleItems =
     chosenTag === "favorite"
-      ? foodItems.filter((item) => item.category === chosenTag)
-      : foodItems;
+      ? props.foodItems.filter((item) => item.category === chosenTag)
+      : props.foodItems;
 
   const router = useRouter();
 
@@ -81,10 +70,14 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
         {visibleItems?.map((item, index) => (
           <FoodItemPage
             key={index}
-            title={item.title}
-            details={`${item.calories * item.servings}大卡、${item.servings || 0}份量`}
-            selected={item.selected ?? false}
-            onToggle={() => toggleItem(index)}
+            id={item.id}
+            name={item.name}
+            calories={item.calories}
+            gramsPerServing={item.gramsPerServing}
+            totalCarb={item.totalCarb}
+            totalFat={item.totalFat}
+            protein={item.protein}
+            // onToggle={() => toggleItem(index)}
           />
         ))}
         {!visibleItems?.length && (

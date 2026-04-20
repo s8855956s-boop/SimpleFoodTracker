@@ -1,3 +1,4 @@
+import { FoodItem } from "@/type/type";
 import { useRouter } from "expo-router";
 import {
   Pressable,
@@ -7,38 +8,35 @@ import {
   View,
 } from "react-native";
 
-type FoodItemProps = {
-  title: string;
-  totalCalories?: number;
-  details?: string;
-  selected?: boolean;
-  onToggle?: () => void;
-};
-
-export default function FoodItemPage(props: FoodItemProps) {
+export default function FoodItemPage(props: FoodItem) {
   const router = useRouter();
 
   return (
     <View style={styles.container}>
       <Pressable
-        style={[styles.checkbox, props.selected && styles.checkboxChecked]}
-        onPress={() => {
-          props.onToggle?.();
-        }}
+      // style={[styles.checkbox, props.selected && styles.checkboxChecked]}
+      // onPress={() => {
+      //   props.onToggle?.();
+      // }}
       >
-        {props.selected && (
+        {/* {props.selected && (
           <View style={styles.checkboxInner}>
             <Text>✓</Text>
           </View>
-        )}
+        )} */}
       </Pressable>
       <View style={styles.separator} />
       <TouchableOpacity
         style={styles.titleContainer}
-        onPress={() => router.push("/foodItemDetail")}
+        onPress={() =>
+          router.push({
+            pathname: "/foodItemDetail",
+            params: { ...props },
+          })
+        }
       >
-        <Text>{props.title}</Text>
-        {props.details && <Text style={styles.subTitle}>{props.details}</Text>}
+        <Text>{props.name}</Text>
+        {/* {props.details && <Text style={styles.subTitle}>{props.details}</Text>} */}
       </TouchableOpacity>
     </View>
   );

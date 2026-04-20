@@ -1,68 +1,107 @@
-import { FoodLog, FoodLogItem } from "@/type/type";
-import { eq } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/expo-sqlite";
-import { useSQLiteContext } from "expo-sqlite";
+import { FoodLog } from "@/type/type";
 import { StyleSheet, View } from "react-native";
-import { food_log, food_log_item } from "../../../db/schema";
 import FoodLogsContainer from "./components/foodLogsContainer";
 import TotalCaloriesInfo from "./components/totalCaloriesInfo";
 import TotalNutritionInfo from "./components/totalNutritionInfo";
 
 export default function FoodPage() {
-  const db = useSQLiteContext();
-  const drizzleDb = drizzle(db);
-
-  const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
-
-  const foodLogResult = drizzleDb
-    .select()
-    .from(food_log)
-    .leftJoin(food_log_item, eq(food_log.id, food_log_item.food_log_id))
-    .where(eq(food_log.date, today))
-    .all();
-
-  const logsMap = new Map<
-    number,
+  const foodLogs: FoodLog[] = [
     {
-      id: number;
-      date: string;
-      title: string;
-      totalCalories: number;
-      foodItems: FoodLogItem[];
-    }
-  >();
-
-  foodLogResult.forEach(({ food_log: log, food_log_item: item }) => {
-    if (!logsMap.has(log.id)) {
-      logsMap.set(log.id, {
-        id: log.id,
-        date: log.date,
-        title: log.title,
-        totalCalories: log.total_calories,
-        foodItems: [],
-      });
-    }
-
-    if (item) {
-      logsMap.get(log.id)!.foodItems.push({
-        name: item.name,
-        unit: item.unit as "grams" | "servings",
-        amount: item.amount,
-        calories: item.calories,
-        totalFat: item.total_fat,
-        totalCarb: item.total_carb,
-        protein: item.protein,
-      });
-    }
-  });
-
-  const foodLogs: FoodLog[] = Array.from(logsMap.values()).map((log) => ({
-    id: log.id,
-    date: new Date(log.date),
-    title: log.title,
-    totalCalories: log.totalCalories,
-    foodItems: log.foodItems,
-  }));
+      id: 1,
+      date: new Date("2024-06-01"),
+      title: "breakfast",
+      totalCalories: 500,
+      foodItems: [
+        {
+          name: "蛋餅",
+          unit: "servings",
+          amount: 1,
+          calories: 300,
+          totalCarb: 30,
+          totalFat: 10,
+          protein: 15,
+        },
+        {
+          name: "牛奶",
+          unit: "grams",
+          amount: 200,
+          calories: 200,
+          totalCarb: 20,
+          totalFat: 8,
+          protein: 10,
+        },
+      ],
+    },
+    {
+      id: 2,
+      date: new Date("2024-06-01"),
+      title: "lunch",
+      totalCalories: 700,
+      foodItems: [
+        {
+          name: "便當",
+          unit: "grams",
+          amount: 300,
+          calories: 700,
+          totalCarb: 70,
+          totalFat: 20,
+          protein: 30,
+        },
+      ],
+    },
+    {
+      id: 3,
+      date: new Date("2024-06-01"),
+      title: "dinner",
+      totalCalories: 650,
+      foodItems: [
+        {
+          name: "雞胸肉沙拉",
+          unit: "grams",
+          amount: 250,
+          calories: 400,
+          totalCarb: 18,
+          totalFat: 12,
+          protein: 42,
+        },
+        {
+          name: "地瓜",
+          unit: "grams",
+          amount: 150,
+          calories: 250,
+          totalCarb: 45,
+          totalFat: 1,
+          protein: 4,
+        },
+      ],
+    },
+    {
+      id: 4,
+      date: new Date("2024-06-01"),
+      title: "snack",
+      totalCalories: 180,
+      foodItems: [
+        {
+          name: "香蕉",
+          unit: "servings",
+          amount: 1,
+          calories: 90,
+          totalCarb: 23,
+          totalFat: 0,
+          protein: 1,
+        },
+        {
+          name: "無糖優格",
+          unit: "grams",
+          amount: 100,
+          calories: 90,
+          totalCarb: 6,
+          totalFat: 3,
+          protein: 8,
+        },
+      ],
+    },
+  ];
 
   const totalCalories = foodLogs.reduce(
     (sum, log) => sum + log.totalCalories,

@@ -1,20 +1,69 @@
 import { FoodItem } from "@/type/type";
-import { useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import NutritionFactsBox from "./component/nutritionFactsBox";
 import PortionBox from "./component/portionBox";
 
 export default function FoodItemDetailScreen() {
   const [unit, setUnit] = useState<"grams" | "servings">("servings");
+  const [foodItem, setFoodItem] = useState<FoodItem>({
+    id: "",
+    name: "",
+    gramsPerServing: 0,
+    calories: 0,
+    totalFat: 0,
+    totalCarb: 0,
+    protein: 0,
+  });
 
-  const foodItem: FoodItem = {
-    name: "備餐",
-    gramsPerServing: 100,
-    calories: 721,
-    totalCarb: 71.3,
-    totalFat: 25.9,
-    protein: 50.7,
-  };
+  const {
+    id,
+    name,
+    gramsPerServing: gramsPerServingStr,
+    calories: caloriesStr,
+    totalFat: totalFatStr,
+    totalCarb: totalCarbStr,
+    protein: proteinStr,
+  } = useLocalSearchParams<{
+    id: string;
+    name: string;
+    gramsPerServing: string;
+    calories: string;
+    totalFat: string;
+    totalCarb: string;
+    protein: string;
+  }>();
+
+  useEffect(() => {
+    if (
+      id &&
+      name &&
+      gramsPerServingStr &&
+      caloriesStr &&
+      totalFatStr &&
+      totalCarbStr &&
+      proteinStr
+    ) {
+      setFoodItem({
+        id,
+        name,
+        gramsPerServing: Number(gramsPerServingStr),
+        calories: Number(caloriesStr),
+        totalFat: Number(totalFatStr),
+        totalCarb: Number(totalCarbStr),
+        protein: Number(proteinStr),
+      });
+    }
+  }, [
+    id,
+    name,
+    gramsPerServingStr,
+    caloriesStr,
+    totalFatStr,
+    totalCarbStr,
+    proteinStr,
+  ]);
 
   return (
     <View style={styles.container}>

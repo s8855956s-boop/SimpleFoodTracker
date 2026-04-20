@@ -1,14 +1,9 @@
-import { drizzle } from "drizzle-orm/expo-sqlite";
-import { useRouter } from "expo-router";
-import { useSQLiteContext } from "expo-sqlite";
-import { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { initializeDatabase, saveFoodItem } from "@/db/db";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
+import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function FoodDetailEdit() {
-  const sqlite = useSQLiteContext();
-  const drizzleDb = drizzle(sqlite);
-  const router = useRouter();
-
   const [name, setName] = useState("");
   const [gramsPerServing, setGramsPerServing] = useState("");
   const [calories, setCalories] = useState("");
@@ -16,42 +11,44 @@ export default function FoodDetailEdit() {
   const [totalCarb, setTotalCarb] = useState("");
   const [protein, setProtein] = useState("");
 
+  useEffect(() => {
+    void initializeDatabase();
+  }, []);
+
   const handleSave = () => {
-    // if (
-    //   !name.trim() ||
-    //   !gramsPerServing.trim() ||
-    //   !calories.trim() ||
-    //   !totalFat.trim() ||
-    //   !totalCarb.trim() ||
-    //   !protein.trim()
-    // ) {
-    //   Alert.alert("提醒", "請填完所有必填欄位");
-    //   return;
-    // }
-    // try {
-    //   drizzleDb
-    //     .insert(food_item)
-    //     .values({
-    //       name: name.trim(),
-    //       grams_per_serving: Number(gramsPerServing),
-    //       calories: Number(calories),
-    //       total_fat: Number(totalFat),
-    //       total_carb: Number(totalCarb),
-    //       protein: Number(protein),
-    //     })
-    //     .run();
-    //   Alert.alert("成功", "食物資料已新增");
-    //   router.back();
-    //   setName("");
-    //   setGramsPerServing("");
-    //   setCalories("");
-    //   setTotalFat("");
-    //   setTotalCarb("");
-    //   setProtein("");
-    // } catch (error) {
-    //   console.error(error);
-    //   Alert.alert("錯誤", "寫入資料庫失敗");
-    // }
+    if (
+      !name.trim() ||
+      !gramsPerServing.trim() ||
+      !calories.trim() ||
+      !totalFat.trim() ||
+      !totalCarb.trim() ||
+      !protein.trim()
+    ) {
+      Alert.alert("提醒", "請填完所有必填欄位");
+      return;
+    }
+    try {
+      saveFoodItem({
+        name: name.trim(),
+        gramsPerServing: Number(gramsPerServing),
+        calories: Number(calories),
+        totalFat: Number(totalFat),
+        totalCarb: Number(totalCarb),
+        protein: Number(protein),
+      });
+
+      Alert.alert("成功", "食物資料已新增");
+      router.back();
+      setName("");
+      setGramsPerServing("");
+      setCalories("");
+      setTotalFat("");
+      setTotalCarb("");
+      setProtein("");
+    } catch (error) {
+      console.error(error);
+      Alert.alert("錯誤", "寫入資料庫失敗");
+    }
   };
 
   return (

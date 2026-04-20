@@ -1,7 +1,27 @@
+import { getAllFoodItems, initializeDatabase } from "@/db/db";
 import FoodItemPageScreen from "@/screens/foodItemPageScreen";
+import { FoodItem } from "@/type/type";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 
 export default function FoodItemPage() {
+  const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
+
+  useEffect(() => {
+    void initializeDatabase();
+  }, []);
+
+  const loadfoodItems = useCallback(async () => {
+    setFoodItems(await getAllFoodItems());
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      void loadfoodItems();
+    }, [loadfoodItems]),
+  );
+
   return (
     <View
       style={{
@@ -11,24 +31,7 @@ export default function FoodItemPage() {
         alignItems: "center",
       }}
     >
-      <FoodItemPageScreen
-        foodItems={[
-          {
-            title: "備餐",
-            calories: 770,
-            servings: 1,
-            selected: true,
-            category: "favorite",
-          },
-          {
-            title: "備餐2",
-            calories: 880,
-            servings: 1,
-            selected: false,
-            category: "myFood",
-          },
-        ]}
-      />
+      <FoodItemPageScreen foodItems={foodItems} />
     </View>
   );
 }
