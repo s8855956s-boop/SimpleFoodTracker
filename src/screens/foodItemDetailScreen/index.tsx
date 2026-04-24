@@ -1,12 +1,49 @@
 import { FoodItem } from "@/type/type";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import NutritionFactsBox from "./component/nutritionFactsBox";
 import PortionBox from "./component/portionBox";
 
+const getInitialUnit = (unit?: string): "grams" | "servings" =>
+  unit === "grams" || unit === "servings" ? unit : "servings";
+
+const getInitialPortion = (portion?: string): number => {
+  if (!portion) {
+    return 1.0;
+  }
+
+  const parsedPortion = Number(portion);
+  return Number.isFinite(parsedPortion) ? parsedPortion : 1.0;
+};
+
 export default function FoodItemDetailScreen() {
-  const [unit, setUnit] = useState<"grams" | "servings">("servings");
+  const router = useRouter();
+  const {
+    id,
+    name,
+    portion: portionProp,
+    unit: unitProp,
+    gramsPerServing: gramsPerServingStr,
+    calories: caloriesStr,
+    totalFat: totalFatStr,
+    totalCarb: totalCarbStr,
+    protein: proteinStr,
+  } = useLocalSearchParams<{
+    id: string;
+    name: string;
+    portion: string;
+    unit: string;
+    gramsPerServing: string;
+    calories: string;
+    totalFat: string;
+    totalCarb: string;
+    protein: string;
+  }>();
+  const [unit, setUnit] = useState<"grams" | "servings">(() =>
+    getInitialUnit(unitProp),
+  );
+  const [portion, setPortion] = useState(() => getInitialPortion(portionProp));
   const [foodItem, setFoodItem] = useState<FoodItem>({
     id: "",
     name: "",
@@ -16,24 +53,6 @@ export default function FoodItemDetailScreen() {
     totalCarb: 0,
     protein: 0,
   });
-
-  const {
-    id,
-    name,
-    gramsPerServing: gramsPerServingStr,
-    calories: caloriesStr,
-    totalFat: totalFatStr,
-    totalCarb: totalCarbStr,
-    protein: proteinStr,
-  } = useLocalSearchParams<{
-    id: string;
-    name: string;
-    gramsPerServing: string;
-    calories: string;
-    totalFat: string;
-    totalCarb: string;
-    protein: string;
-  }>();
 
   useEffect(() => {
     if (
@@ -65,11 +84,35 @@ export default function FoodItemDetailScreen() {
     proteinStr,
   ]);
 
+  useEffect(() => {
+    setUnit(getInitialUnit(unitProp));
+    setPortion(getInitialPortion(portionProp));
+  }, [portionProp, unitProp]);
+
+  const onSave = () => {
+    router.dismissTo({
+      pathname: "/foodItemPage",
+      params: {
+        savedItemId: id,
+        saved: "true",
+        portion: portion.toString(),
+        unit,
+      },
+    });
+  };
+
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.saveButtonContainer} onPress={onSave}>
+        <View style={styles.saveButton}>
+          <Text>儲存</Text>
+        </View>
+      </TouchableOpacity>
       <PortionBox
         unit={unit}
         handleUnitChange={setUnit}
+        portion={portion}
+        handlePortionChange={setPortion}
         gramsPerServing={foodItem.gramsPerServing}
         foodTitle={foodItem.name}
         calories={foodItem.calories}
@@ -90,5 +133,16 @@ export default function FoodItemDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
+  },
+  saveButtonContainer: {
+    alignSelf: "flex-end",
+    marginRight: 20,
+    marginTop: 20,
+  },
+  saveButton: {
+    backgroundColor: "#c2c2c2",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
   },
 });

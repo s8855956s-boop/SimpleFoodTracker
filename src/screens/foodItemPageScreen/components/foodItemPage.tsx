@@ -1,6 +1,5 @@
 import { FoodItem } from "@/type/type";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
 import {
   Pressable,
   StyleSheet,
@@ -12,23 +11,14 @@ import {
 type FoodItemPageProps = FoodItem & {
   selected?: boolean;
   onToggle?: () => void;
-  portion?: number;
-  unit?: "grams" | "servings";
+  portion: number;
+  unit: "grams" | "servings";
+  handlePortionChange?: (newPortion: number) => void;
+  handleUnitChange?: (newUnit: "grams" | "servings") => void;
 };
 
 export default function FoodItemPage(props: FoodItemPageProps) {
   const router = useRouter();
-  const [portion, setPortion] = useState(1);
-  const [unit, setUnit] = useState<"grams" | "servings">("servings");
-
-  useEffect(() => {
-    if (props.portion) {
-      setPortion(props.portion);
-    }
-    if (props.unit) {
-      setUnit(props.unit);
-    }
-  }, [props.portion, props.unit]);
 
   return (
     <View style={styles.container}>
@@ -53,6 +43,8 @@ export default function FoodItemPage(props: FoodItemPageProps) {
             params: {
               id: props.id,
               name: props.name,
+              portion: String(props.portion),
+              unit: props.unit,
               gramsPerServing: String(props.gramsPerServing),
               calories: String(props.calories),
               totalFat: String(props.totalFat),
@@ -64,8 +56,9 @@ export default function FoodItemPage(props: FoodItemPageProps) {
       >
         <Text>{props.name}</Text>
         <Text style={styles.subTitle}>
-          {props.calories * portion}大卡{" "}
-          {unit && `${portion} ${unit === "grams" ? "克" : "份"}`}
+          {props.calories * props.portion}大卡{" "}
+          {props.unit &&
+            `${props.portion} ${props.unit === "grams" ? "克" : "份"}`}
         </Text>
       </TouchableOpacity>
     </View>

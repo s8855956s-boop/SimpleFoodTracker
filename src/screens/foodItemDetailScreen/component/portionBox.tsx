@@ -6,7 +6,8 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 type PortionBoxProps = {
   unit: "grams" | "servings";
   handleUnitChange: (newUnit: "grams" | "servings") => void;
-  portion?: number;
+  portion: number;
+  handlePortionChange: (newPortion: number) => void;
   gramsPerServing: number;
   foodTitle: string;
   calories: number;
@@ -17,51 +18,38 @@ type PortionBoxProps = {
 };
 
 export default function PortionBox(props: PortionBoxProps) {
-  const [portion, setPortion] = useState(
-    props.portion
-      ? props.portion
-      : props.unit === "servings"
-        ? 1.0
-        : props.gramsPerServing,
-  );
   const [previousValue, setPreviousValue] = useState(1.0);
   const [portionInputValue, setPortionInputValue] = useState("1.0");
   const unit = props.unit;
 
   useEffect(() => {
-    if (unit === "servings") {
-      setPortion(1.0);
-      setPortionInputValue("1.0");
-    } else if (unit === "grams") {
-      setPortion(100.0);
-      setPortionInputValue("100.0");
-    }
-  }, [unit]);
+    setPortionInputValue(props.portion.toString());
+  }, [props.portion]);
 
   const [isFavourite, setIsFavourite] = useState(
     props.isFavourite ? props.isFavourite : false,
   );
 
   const handleFocus = () => {
-    setPreviousValue(portion);
+    setPreviousValue(props.portion);
     setPortionInputValue("");
   };
 
   const handleBlur = () => {
     if (portionInputValue === "") {
-      setPortion(previousValue);
+      props.handlePortionChange(previousValue);
       setPortionInputValue(previousValue.toFixed(1));
       return;
     }
 
     const num = Number(portionInputValue);
     if (Number.isNaN(num)) {
-      setPortion(previousValue);
+      props.handlePortionChange(previousValue);
       setPortionInputValue(previousValue.toFixed(1));
       return;
     }
 
-    setPortion(num);
+    props.handlePortionChange(num);
     setPortionInputValue(num.toFixed(1));
   };
 
@@ -85,9 +73,9 @@ export default function PortionBox(props: PortionBoxProps) {
 
   const calculateNutrition = (value: number) => {
     if (unit === "servings") {
-      return value * portion;
+      return value * props.portion;
     } else if (unit === "grams") {
-      return (value / props.gramsPerServing) * portion;
+      return (value / props.gramsPerServing) * props.portion;
     }
     return 0;
   };
@@ -133,7 +121,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "#fff",
     padding: 20,
-    marginTop: "10%",
+    marginTop: "5%",
     width: "90%",
     alignItems: "center",
   },
