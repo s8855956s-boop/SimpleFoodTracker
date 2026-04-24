@@ -136,13 +136,78 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
         hasVisibleItems && styles.containerFilled,
       ]}
     >
-      <View style={{ alignItems: "flex-end", marginBottom: 30 }}>
+      <View style={{ alignItems: "flex-end", marginBottom: 10 }}>
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => router.push("/foodItemEdit")}
         >
           <Text style={styles.addButtonText}>新增食物 +</Text>
         </TouchableOpacity>
+      </View>
+      <View
+        style={{
+          marginBottom: 10,
+          flexDirection: "row",
+          justifyContent: "flex-start",
+          gap: 10,
+          flexWrap: "wrap",
+        }}
+      >
+        <View style={styles.foodItemTag}>
+          <Text>備餐</Text>
+          <TouchableOpacity
+            style={styles.removeTagButton}
+            onPress={() => console.log("remove food item")}
+          >
+            <Text style={styles.removeTagButtonText}>-</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.foodItemTag}>
+          <Text>備餐2</Text>
+          <TouchableOpacity
+            style={styles.removeTagButton}
+            onPress={() => console.log("remove food item")}
+          >
+            <Text style={styles.removeTagButtonText}>-</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.foodItemTag}>
+          <Text>備餐3</Text>
+          <TouchableOpacity
+            style={styles.removeTagButton}
+            onPress={() => console.log("remove food item")}
+          >
+            <Text style={styles.removeTagButtonText}>-</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.foodItemTag}>
+          <Text>備餐4</Text>
+          <TouchableOpacity
+            style={styles.removeTagButton}
+            onPress={() => console.log("remove food item")}
+          >
+            <Text style={styles.removeTagButtonText}>-</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.foodItemTag}>
+          <Text>備餐5</Text>
+          <TouchableOpacity
+            style={styles.removeTagButton}
+            onPress={() => console.log("remove food item")}
+          >
+            <Text style={styles.removeTagButtonText}>-</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.foodItemTag}>
+          <Text>備餐6</Text>
+          <TouchableOpacity
+            style={styles.removeTagButton}
+            onPress={() => console.log("remove food item")}
+          >
+            <Text style={styles.removeTagButtonText}>-</Text>
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={styles.tagContainer}>
         <TouchableOpacity onPress={() => setChosenTag("favorite")}>
@@ -278,5 +343,26 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#111827",
     marginTop: 10,
+  },
+  foodItemTag: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 8,
+    borderRadius: 8,
+    backgroundColor: "#c7c7c9",
+  },
+  removeTagButton: {
+    borderRadius: 12.5,
+    alignItems: "center",
+    justifyContent: "center",
+    height: 15,
+    width: 15,
+    backgroundColor: "#e9e9e9",
+    marginLeft: 5,
+  },
+  removeTagButtonText: {
+    color: "#ea0c17",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
