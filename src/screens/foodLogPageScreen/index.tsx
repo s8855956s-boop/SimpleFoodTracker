@@ -5,6 +5,7 @@ import NutritionInfo from "./component/nutritionInfo";
 export default function FoodLogPageScreen() {
   const foodLogItems = [
     {
+      id: "1",
       name: "早餐",
       calories: 500,
       protein: 30,
@@ -14,6 +15,7 @@ export default function FoodLogPageScreen() {
       unit: "servings" as "servings",
     },
     {
+      id: "2",
       name: "午餐",
       calories: 800,
       protein: 40,

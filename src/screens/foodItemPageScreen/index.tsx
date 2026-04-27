@@ -1,6 +1,6 @@
 import { FoodItem } from "@/type/type";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -23,7 +23,6 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
   const [toggleItemIds, setToggleItemIds] = useState<string[]>([]);
   const [portion, setPortion] = useState<number[]>([1]);
   const [unit, setUnit] = useState<("grams" | "servings")[]>(["servings"]);
-  const handledSaveKeyRef = useRef<string | null>(null);
   const {
     saved,
     savedItemId,
@@ -93,19 +92,12 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
       return;
     }
 
-    const saveKey = `${savedItemId}:${savedPortion ?? ""}:${savedUnit ?? ""}`;
-    if (handledSaveKeyRef.current === saveKey) {
-      return;
-    }
-
     const savedItemIndex = visibleItems.findIndex(
       (item) => item.id === savedItemId,
     );
     if (savedItemIndex === -1) {
       return;
     }
-
-    handledSaveKeyRef.current = saveKey;
     setToggleItemIds((prev) =>
       prev.includes(savedItemId) ? prev : [...prev, savedItemId],
     );
@@ -153,61 +145,26 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
           flexWrap: "wrap",
         }}
       >
-        <View style={styles.foodItemTag}>
-          <Text>備餐</Text>
-          <TouchableOpacity
-            style={styles.removeTagButton}
-            onPress={() => console.log("remove food item")}
-          >
-            <Text style={styles.removeTagButtonText}>-</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.foodItemTag}>
-          <Text>備餐2</Text>
-          <TouchableOpacity
-            style={styles.removeTagButton}
-            onPress={() => console.log("remove food item")}
-          >
-            <Text style={styles.removeTagButtonText}>-</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.foodItemTag}>
-          <Text>備餐3</Text>
-          <TouchableOpacity
-            style={styles.removeTagButton}
-            onPress={() => console.log("remove food item")}
-          >
-            <Text style={styles.removeTagButtonText}>-</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.foodItemTag}>
-          <Text>備餐4</Text>
-          <TouchableOpacity
-            style={styles.removeTagButton}
-            onPress={() => console.log("remove food item")}
-          >
-            <Text style={styles.removeTagButtonText}>-</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.foodItemTag}>
-          <Text>備餐5</Text>
-          <TouchableOpacity
-            style={styles.removeTagButton}
-            onPress={() => console.log("remove food item")}
-          >
-            <Text style={styles.removeTagButtonText}>-</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.foodItemTag}>
-          <Text>備餐6</Text>
-          <TouchableOpacity
-            style={styles.removeTagButton}
-            onPress={() => console.log("remove food item")}
-          >
-            <Text style={styles.removeTagButtonText}>-</Text>
-          </TouchableOpacity>
-        </View>
+        {toggleItemIds.map((id) => {
+          const foodItem = props.foodItems.find((item) => item.id === id);
+          if (!foodItem) return null;
+          return (
+            <View key={id} style={styles.foodItemTag}>
+              <Text>{foodItem.name}</Text>
+              <TouchableOpacity
+                style={styles.removeTagButton}
+                onPress={() =>
+                  toggleItem(
+                    id,
+                    props.foodItems.findIndex((item) => item.id === id),
+                  )
+                }
+              >
+                <Text style={styles.removeTagButtonText}>-</Text>
+              </TouchableOpacity>
+            </View>
+          );
+        })}
       </View>
       <View style={styles.tagContainer}>
         <TouchableOpacity onPress={() => setChosenTag("favorite")}>

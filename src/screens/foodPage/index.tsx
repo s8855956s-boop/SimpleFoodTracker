@@ -13,6 +13,7 @@ export default function FoodPage() {
       totalCalories: 500,
       foodItems: [
         {
+          id: "1",
           name: "蛋餅",
           unit: "servings",
           amount: 1,
@@ -22,6 +23,7 @@ export default function FoodPage() {
           protein: 15,
         },
         {
+          id: "2",
           name: "牛奶",
           unit: "grams",
           amount: 200,
@@ -39,6 +41,7 @@ export default function FoodPage() {
       totalCalories: 700,
       foodItems: [
         {
+          id: "3",
           name: "便當",
           unit: "grams",
           amount: 300,
@@ -56,6 +59,7 @@ export default function FoodPage() {
       totalCalories: 650,
       foodItems: [
         {
+          id: "4",
           name: "雞胸肉沙拉",
           unit: "grams",
           amount: 250,
@@ -65,6 +69,7 @@ export default function FoodPage() {
           protein: 42,
         },
         {
+          id: "5",
           name: "地瓜",
           unit: "grams",
           amount: 150,
@@ -82,6 +87,7 @@ export default function FoodPage() {
       totalCalories: 180,
       foodItems: [
         {
+          id: "6",
           name: "香蕉",
           unit: "servings",
           amount: 1,
@@ -91,6 +97,7 @@ export default function FoodPage() {
           protein: 1,
         },
         {
+          id: "7",
           name: "無糖優格",
           unit: "grams",
           amount: 100,
