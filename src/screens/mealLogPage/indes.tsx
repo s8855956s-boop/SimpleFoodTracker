@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { FoodLogItem } from "@/type/type";
 import { StyleSheet, Text, View } from "react-native";
+import MealFoodRowContainer from "./component/mealFoodRowContainer";
 import MealTotalNutritionFacts from "./component/mealTotalNutritionFacts";
 
-const foodLogItems = [
+const foodLogItems: FoodLogItem[] = [
   {
     id: "1",
     name: "豆腐",
@@ -16,13 +17,11 @@ const foodLogItems = [
     proteinPerServing: 20,
     totalFat: 2,
     totalCarb: 22,
-    protein: 10,
+    totalProtein: 10,
   },
 ];
 
 export default function MealLogPage() {
-  const [portion, setPortion] = useState<number[]>([1]);
-
   const totalCalories = foodLogItems.reduce(
     (sum, item) => sum + item.caloriesPerServing * item.portion,
     0,
@@ -54,6 +53,7 @@ export default function MealLogPage() {
         totalFat={totalFat}
         protein={totalProtein}
       />
+      <MealFoodRowContainer foodLogItems={foodLogItems} />
     </View>
   );
 }
