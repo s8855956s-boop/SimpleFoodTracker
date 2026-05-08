@@ -27,7 +27,7 @@ export type FoodLogItem = {
 
 export type FoodLog = {
   id: number;
-  title: "breakfast" | "lunch" | "dinner" | "snack";
+  mealType: "breakfast" | "lunch" | "dinner" | "snack";
   date: Date;
   totalCalories: number;
   foodItems: FoodLogItem[];
