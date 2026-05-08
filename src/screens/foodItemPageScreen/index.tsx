@@ -230,7 +230,15 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
         )}
       </ScrollView>
       {toggleItemIds.length > 0 && (
-        <TouchableOpacity style={styles.nextButton}>
+        <TouchableOpacity
+          style={styles.nextButton}
+          onPress={() =>
+            router.push({
+              pathname: "/mealLogPage",
+              params: {},
+            })
+          }
+        >
           <Text style={styles.addButtonText}>下一筆</Text>
         </TouchableOpacity>
       )}

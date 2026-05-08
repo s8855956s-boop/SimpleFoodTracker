@@ -21,7 +21,7 @@ const foodLogItems: FoodLogItem[] = [
   },
 ];
 
-export default function MealLogPage() {
+export default function MealLogPageScreen() {
   const totalCalories = foodLogItems.reduce(
     (sum, item) => sum + item.caloriesPerServing * item.portion,
     0,

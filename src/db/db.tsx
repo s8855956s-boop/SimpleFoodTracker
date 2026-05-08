@@ -222,3 +222,46 @@ export async function getFoodLogsByDate(date: string) {
       })),
   }));
 }
+
+export async function getFoodItemByIds(ids: string[]) {
+  if (ids.length === 0) {
+    return [];
+  }
+
+  const db = await getDatabase();
+
+  const rows = await db.getAllAsync<{
+    id: number;
+    name: string;
+    grams_per_serving: number;
+    calories: number;
+    total_fat: number;
+    total_carb: number;
+    protein: number;
+    category: FoodItem["category"] | null;
+  }>(
+    `SELECT
+      id,
+      name,
+      grams_per_serving,
+      calories,
+      total_fat,
+      total_carb,
+      protein,
+      category
+    FROM ${TABLES.foodItem}
+    WHERE id IN (${ids.map(() => "?").join(",")})`,
+    ids.map(Number),
+  );
+
+  return rows.map((row) => ({
+    id: String(row.id),
+    name: row.name,
+    gramsPerServing: row.grams_per_serving,
+    calories: row.calories,
+    totalFat: row.total_fat,
+    totalCarb: row.total_carb,
+    protein: row.protein,
+    category: row.category ?? undefined,
+  }));
+}
