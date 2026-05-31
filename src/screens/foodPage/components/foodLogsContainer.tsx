@@ -4,6 +4,7 @@ import FoodLogRow from "./foodLogRow";
 
 type FoodLogsContainerProps = {
   foodLogs: FoodLog[];
+  date: Date;
 };
 
 export default function FoodLogsContainer(props: FoodLogsContainerProps) {
@@ -20,6 +21,7 @@ export default function FoodLogsContainer(props: FoodLogsContainerProps) {
             .filter((log) => log.title === "breakfast")[0]
             ?.foodItems.map((foodItem) => foodItem.name) || []
         }
+        date={props.date}
       />
       <View style={styles.separator} />
       <FoodLogRow
@@ -33,6 +35,7 @@ export default function FoodLogsContainer(props: FoodLogsContainerProps) {
             .filter((log) => log.title === "lunch")[0]
             ?.foodItems.map((foodItem) => foodItem.name) || []
         }
+        date={props.date}
       />
       <View style={styles.separator} />
       <FoodLogRow
@@ -46,6 +49,7 @@ export default function FoodLogsContainer(props: FoodLogsContainerProps) {
             .filter((log) => log.title === "dinner")[0]
             ?.foodItems.map((foodItem) => foodItem.name) || []
         }
+        date={props.date}
       />
       <View style={styles.separator} />
       <FoodLogRow
@@ -59,6 +63,7 @@ export default function FoodLogsContainer(props: FoodLogsContainerProps) {
             .filter((log) => log.title === "snack")[0]
             ?.foodItems.map((foodItem) => foodItem.name) || []
         }
+        date={props.date}
       />
     </View>
   );

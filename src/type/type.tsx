@@ -14,7 +14,12 @@ export type FoodLogItem = {
   name: string;
   unit: "grams" | "servings";
   amount: number;
-  calories: number;
+  gramsPerServing: number;
+  caloriesPerServing: number;
+  fatPerServing: number;
+  carbPerServing: number;
+  proteinPerServing: number;
+  totalCalories: number;
   totalFat: number;
   totalCarb: number;
   protein: number;

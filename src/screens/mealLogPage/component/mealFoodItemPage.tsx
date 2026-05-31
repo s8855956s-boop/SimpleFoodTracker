@@ -1,56 +1,83 @@
-import { FoodItem } from "@/type/type";
+import { FoodLogItem } from "@/type/type";
 import { useRouter } from "expo-router";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity, View,
+} from "react-native";
 
-type FoodItemPageProps = FoodItem & {
+type FoodItemPageProps = {
+  foodLogItems: FoodLogItem[];
   selected?: boolean;
   onToggle?: () => void;
-  portion: number;
-  unit: "grams" | "servings";
   handlePortionChange?: (newPortion: number) => void;
   handleUnitChange?: (newUnit: "grams" | "servings") => void;
 };
 
-export default function MealFoodItemPage(props: FoodItemPageProps) {
+export default function MealFoodItemPage(item: FoodItemPageProps) {
   const router = useRouter();
+  const foodLogItems = item.foodLogItems;
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.titleContainer}
-        onPress={() => {
-          router.push({
-            pathname: "/foodItemDetail",
-            params: {
-              id: props.id,
-              name: props.name,
-              portion: String(props.portion),
-              unit: props.unit,
-              gramsPerServing: String(props.gramsPerServing),
-              calories: String(props.calories),
-              totalFat: String(props.totalFat),
-              totalCarb: String(props.totalCarb),
-              protein: String(props.protein),
-            },
-          });
-        }}
-      >
-        <Text>{props.name}</Text>
-        <Text style={styles.subTitle}>
-          {props.calories * props.portion}大卡{" "}
-          {props.unit &&
-            `${props.portion} ${props.unit === "grams" ? "克" : "份"}`}
-        </Text>
-      </TouchableOpacity>
+      {foodLogItems.map((item) => (
+      <View key={item.id} style={styles.foodItemRow}>
+        <TouchableOpacity
+          style={styles.titleContainer}
+          onPress={() => {
+            router.push({
+              pathname: "/foodItemDetail",
+              params: {
+                id: item.id,
+                name: item.name,
+                portion: String(item.amount),
+                unit: item.unit,
+                gramsPerServing: String(item.gramsPerServing),
+                calories: String(item.totalCalories),
+                totalFat: String(item.totalFat),
+                totalCarb: String(item.totalCarb),
+                protein: String(item.protein),
+              },
+            });
+          }}
+        >
+          <Text>{item.name}</Text>
+          <Text style={styles.subTitle}>
+            {item.caloriesPerServing * item.amount}大卡{" "}
+            {item.unit &&
+              `${item.amount} ${item.unit === "grams" ? "克" : "份"}`}
+                </Text>
+        </TouchableOpacity>
+        <View style={styles.separator} />
+      </View>
+      ))
+    }
+      <View style={styles.foodItemRow}>
+        <TouchableOpacity
+          style={styles.titleContainer && {paddingBottom: 20}}
+          onPress={() => {
+            router.push({
+              pathname: "/foodItemPage",
+            });
+          }}
+        >
+          <Text style={{ color: "#111827", fontWeight: "bold" }}>新增食物</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
+    width: "100%",
+    paddingHorizontal: 20,
+  },
+  foodItemRow: {
+    width: "100%",
+    paddingTop: 10
   },
   checkbox: {
     width: 25,
@@ -85,8 +112,9 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flexDirection: "column",
-    flex: 1,
-    minWidth: 0,
+    // flex: 1,
+    paddingBottom: 10,
+    width: "100%",
   },
   subTitle: {
     color: "#6b7280",
@@ -108,9 +136,8 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   separator: {
-    width: 1,
-    height: "80%",
+    height: 1,
     backgroundColor: "#848484",
-    marginHorizontal: 10,
+    marginVertical: 4,
   },
 });

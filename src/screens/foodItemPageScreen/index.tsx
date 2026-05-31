@@ -28,11 +28,15 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
     savedItemId,
     portion: savedPortion,
     unit: savedUnit,
+    mealType,
+    date
   } = useLocalSearchParams<{
     saved?: string;
     savedItemId?: string;
     portion?: string;
     unit?: "grams" | "servings";
+    mealType: string;
+    date: string;
   }>();
 
   const handlePortionChange = useCallback(
@@ -117,6 +121,11 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
     handlePortionChange,
     handleUnitChange,
   ]);
+
+  const onPressNext = () => {
+    const toBeSavedItems = props.foodItems.filter((item) => toggleItemIds.includes(item.id));
+    //想一下要怎麼把這些資料帶到MealLog頁面。
+  };
 
   return (
     <View
@@ -230,7 +239,15 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
         )}
       </ScrollView>
       {toggleItemIds.length > 0 && (
-        <TouchableOpacity style={styles.nextButton}>
+        <TouchableOpacity style={styles.nextButton} onPress={() => {
+          router.push({
+            pathname: "/mealLog",
+            params: {
+              mealType,
+              date
+            }
+          })
+        }}>
           <Text style={styles.addButtonText}>下一筆</Text>
         </TouchableOpacity>
       )}

@@ -1,10 +1,11 @@
-import MealLogPage from "@/screens/mealLogPage/indes";
+
+import FoodPage from "@/screens/foodPage";
 import { View } from "react-native";
 
 export default function Index() {
   return (
     <View>
-      <MealLogPage />
+      <FoodPage />
     </View>
   );
 }

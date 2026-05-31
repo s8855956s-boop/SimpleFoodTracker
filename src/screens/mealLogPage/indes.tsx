@@ -1,12 +1,14 @@
+import { FoodLogItem } from "@/type/type";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import MealFoodItemPage from "./component/mealFoodItemPage";
 import MealTotalNutritionFacts from "./component/mealTotalNutritionFacts";
 
-const foodLogItems = [
+const foodLogItems: FoodLogItem[] = [
   {
     id: "1",
     name: "豆腐",
-    portion: 2,
+    amount: 2,
     unit: "servings" as "servings",
     gramsPerServing: 150,
     caloriesPerServing: 80,
@@ -18,28 +20,43 @@ const foodLogItems = [
     totalCarb: 22,
     protein: 10,
   },
+  {
+    id: "2",
+    name: "白飯",
+    amount: 2,
+    unit: "servings" as "servings",
+    gramsPerServing: 100,
+    caloriesPerServing: 100,
+    totalCalories: 200,
+    fatPerServing: 6,
+    carbPerServing: 77,
+    proteinPerServing: 33,
+    totalFat: 5,
+    totalCarb: 13,
+    protein: 6,
+  },
 ];
 
 export default function MealLogPage() {
   const [portion, setPortion] = useState<number[]>([1]);
 
   const totalCalories = foodLogItems.reduce(
-    (sum, item) => sum + item.caloriesPerServing * item.portion,
+    (sum, item) => sum + item.totalCalories * item.amount,
     0,
   );
 
   const totalCarb = foodLogItems.reduce(
-    (sum, item) => sum + item.carbPerServing * item.portion,
+    (sum, item) => sum + item.totalCarb * item.amount,
     0,
   );
 
   const totalFat = foodLogItems.reduce(
-    (sum, item) => sum + item.fatPerServing * item.portion,
+    (sum, item) => sum + item.totalFat * item.amount,
     0,
   );
 
   const totalProtein = foodLogItems.reduce(
-    (sum, item) => sum + item.proteinPerServing * item.portion,
+    (sum, item) => sum + item.protein * item.amount,
     0,
   );
 
@@ -54,6 +71,9 @@ export default function MealLogPage() {
         totalFat={totalFat}
         protein={totalProtein}
       />
+      <View style={styles.foodItemContainer}>
+        <MealFoodItemPage foodLogItems={foodLogItems} />
+      </View>
     </View>
   );
 }
@@ -62,5 +82,13 @@ const styles = StyleSheet.create({
   container: {
     marginTop: "5%",
     alignItems: "center",
+  },
+  foodItemContainer: {
+    borderRadius: 10,
+    backgroundColor: "#fff",
+    marginTop: "5%",
+    width: "90%",
+    alignItems: "flex-start",
+    flexDirection: "column",
   },
 });

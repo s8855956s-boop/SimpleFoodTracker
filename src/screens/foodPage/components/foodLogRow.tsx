@@ -5,6 +5,7 @@ type FoodLogProps = {
   title: string;
   totalCalories?: number;
   foodItems?: string[];
+  date: Date;
 };
 
 export default function FoodLogRow(props: FoodLogProps) {
@@ -13,7 +14,15 @@ export default function FoodLogRow(props: FoodLogProps) {
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => router.push("/foodItemPage")}
+      onPress={() => {
+        router.push({
+          pathname: "/foodItemPage",
+          params: {
+            mealType: props.title,
+            date: props.date.toISOString(),
+          },
+        });
+      }}
     >
       <View style={styles.circle}>
         <Text>{props.totalCalories?.toString() || "0"}</Text>
@@ -25,7 +34,15 @@ export default function FoodLogRow(props: FoodLogProps) {
       </View>
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => router.push("/foodItemPage")}
+        onPress={() => {
+          router.push({
+            pathname: "/foodItemPage",
+            params: {
+              title: props.title,
+              date: props.date.toISOString(),
+            },
+          });
+        }}
       >
         <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
