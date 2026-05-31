@@ -1,4 +1,4 @@
-import { FoodItem } from "@/type/type";
+import { FoodItem, FoodLog, FoodLogItem } from "@/type/type";
 import * as SQLite from "expo-sqlite";
 
 export const DATABASE_NAME = "food_tracker.db";
@@ -38,7 +38,7 @@ export async function initializeDatabase() {
 
     CREATE TABLE IF NOT EXISTS ${TABLES.foodLog} (
       id INTEGER PRIMARY KEY,
-      title TEXT NOT NULL CHECK (title IN ('breakfast', 'lunch', 'dinner', 'snack')),
+      meal_type TEXT NOT NULL CHECK (meal_type IN ('breakfast', 'lunch', 'dinner', 'snack')),
       date TEXT NOT NULL UNIQUE,
       total_calories REAL NOT NULL
     );
@@ -132,6 +132,126 @@ export async function getAllFoodItems(): Promise<FoodItem[]> {
       category
     FROM ${TABLES.foodItem}
     ORDER BY id DESC`,
+  );
+
+  return rows.map((row) => ({
+    id: String(row.id),
+    name: row.name,
+    gramsPerServing: row.grams_per_serving,
+    calories: row.calories,
+    totalFat: row.total_fat,
+    totalCarb: row.total_carb,
+    protein: row.protein,
+    category: row.category ?? undefined,
+  }));
+}
+
+export async function getFoodLogsByDate(date: string) {
+  const db = await getDatabase();
+  const foodLogs = await db.getAllAsync<{
+    id: number;
+    meal_type: string;
+    date: string;
+    total_calories: number;
+  }>(
+    `SELECT id, meal_type, date, total_calories FROM ${TABLES.foodLog} WHERE date = ?`,
+    [date],
+  );
+
+  if (foodLogs.length === 0) {
+    return [];
+  }
+
+  const foodLogItems = await db.getAllAsync<{
+    id: number;
+    food_log_id: number;
+    name: string;
+    unit: string;
+    portion: number;
+    grams_per_serving: number;
+    calories_per_serving: number;
+    fat_per_serving: number;
+    carb_per_serving: number;
+    protein_per_serving: number;
+    total_calories: number;
+    total_fat: number;
+    total_carb: number;
+    protein: number;
+  }>(
+    `SELECT
+      id,
+      food_log_id,
+      name,
+      unit,
+      portion,
+      grams_per_serving,
+      calories_per_serving,
+      fat_per_serving,
+      carb_per_serving,
+      protein_per_serving,
+      total_calories,
+      total_fat,
+      total_carb,
+      protein
+    FROM ${TABLES.foodLogItem}
+    WHERE food_log_id IN (${foodLogs.map(() => "?").join(",")})`,
+    foodLogs.map((log) => log.id),
+  );
+
+  return foodLogs.map((log) => ({
+    id: log.id,
+    mealType: log.meal_type as FoodLog["mealType"],
+    date: new Date(log.date),
+    totalCalories: log.total_calories,
+    foodItems: foodLogItems
+      .filter((item) => item.food_log_id === log.id)
+      .map((item) => ({
+        id: String(item.id),
+        name: item.name,
+        unit: item.unit as FoodLogItem["unit"],
+        amount: item.portion,
+        gramsPerServing: item.grams_per_serving,
+        caloriesPerServing: item.calories_per_serving,
+        fatPerServing: item.fat_per_serving,
+        carbPerServing: item.carb_per_serving,
+        proteinPerServing: item.protein_per_serving,
+        totalCalories: item.total_calories,
+        totalFat: item.total_fat,
+        totalCarb: item.total_carb,
+        totalProtein: item.protein,
+      })),
+  }));
+}
+
+export async function getFoodItemByIds(ids: string[]) {
+  if (ids.length === 0) {
+    return [];
+  }
+
+  const db = await getDatabase();
+
+  const rows = await db.getAllAsync<{
+    id: number;
+    name: string;
+    grams_per_serving: number;
+    calories: number;
+    total_fat: number;
+    total_carb: number;
+    protein: number;
+    category: FoodItem["category"] | null;
+  }>(
+    `SELECT
+      id,
+      name,
+      grams_per_serving,
+      calories,
+      total_fat,
+      total_carb,
+      protein,
+      category
+    FROM ${TABLES.foodItem}
+    WHERE id IN (${ids.map(() => "?").join(",")})`,
+    ids.map(Number),
   );
 
   return rows.map((row) => ({

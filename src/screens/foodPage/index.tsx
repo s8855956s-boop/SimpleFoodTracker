@@ -39,7 +39,7 @@ export default function FoodPage() {
     {
       id: 1,
       date: new Date("2026-06-01"),
-      title: "breakfast",
+      mealType: "breakfast",
       totalCalories: 500,
       foodItems: [
         {
@@ -55,7 +55,7 @@ export default function FoodPage() {
           totalCalories: 300,
           totalCarb: 30,
           totalFat: 10,
-          protein: 15,
+          totalProtein: 15,
         },
         {
           id: "2",
@@ -70,14 +70,14 @@ export default function FoodPage() {
           totalCalories: 200,
           totalCarb: 20,
           totalFat: 8,
-          protein: 10,
+          totalProtein: 10,
         },
       ],
     },
     {
       id: 2,
       date: new Date("2026-06-01"),
-      title: "lunch",
+      mealType: "lunch",
       totalCalories: 700,
       foodItems: [
         {
@@ -93,14 +93,14 @@ export default function FoodPage() {
           totalCalories: 700,
           totalCarb: 70,
           totalFat: 20,
-          protein: 30,
+          totalProtein: 30,
         },
       ],
     },
     {
       id: 3,
       date: new Date("2026-06-01"),
-      title: "dinner",
+      mealType: "dinner",
       totalCalories: 650,
       foodItems: [
         {
@@ -116,7 +116,7 @@ export default function FoodPage() {
           totalCalories: 400,
           totalCarb: 18,
           totalFat: 12,
-          protein: 42,
+          totalProtein: 42,
         },
         {
           id: "5",
@@ -131,14 +131,14 @@ export default function FoodPage() {
           totalCalories: 250,
           totalCarb: 45,
           totalFat: 1,
-          protein: 4,
+          totalProtein: 4,
         },
       ],
     },
     {
       id: 4,
       date: new Date("2026-06-01"),
-      title: "snack",
+      mealType: "snack",
       totalCalories: 180,
       foodItems: [
         {
@@ -154,7 +154,7 @@ export default function FoodPage() {
           totalCalories: 90,
           totalCarb: 23,
           totalFat: 0,
-          protein: 1,
+          totalProtein: 1,
         },
         {
           id: "7",
@@ -169,7 +169,7 @@ export default function FoodPage() {
           totalCalories: 90,
           totalCarb: 6,
           totalFat: 3,
-          protein: 8,
+          totalProtein: 8,
         },
       ],
     },
@@ -271,7 +271,10 @@ export default function FoodPage() {
         protein={selectedFoodLogs.reduce(
           (sum, log) =>
             sum +
-            log.foodItems.reduce((itemSum, item) => itemSum + item.protein, 0),
+            log.foodItems.reduce(
+              (itemSum, item) => itemSum + item.totalProtein,
+              0,
+            ),
           0,
         )}
       />
@@ -342,10 +345,5 @@ const styles = StyleSheet.create({
   },
   selectedText: {
     color: "#fff",
-  },
-  separator: {
-    height: 1,
-    backgroundColor: "#848484",
-    marginVertical: 4,
   },
 });

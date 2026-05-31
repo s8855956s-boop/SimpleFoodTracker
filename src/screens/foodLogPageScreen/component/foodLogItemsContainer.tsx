@@ -14,7 +14,7 @@ export default function FoodLogItemsContainer(props: FoodLogsContainerProps) {
           <FoodLogItemRow
             name={item.name}
             calories={item.totalCalories}
-            protein={item.protein}
+            protein={item.totalProtein}
             totalCarb={item.totalCarb}
             totalFat={item.totalFat}
             amount={item.amount}

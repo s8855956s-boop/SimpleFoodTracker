@@ -22,12 +22,12 @@ export type FoodLogItem = {
   totalCalories: number;
   totalFat: number;
   totalCarb: number;
-  protein: number;
+  totalProtein: number;
 };
 
 export type FoodLog = {
   id: number;
-  title: "breakfast" | "lunch" | "dinner" | "snack";
+  mealType: "breakfast" | "lunch" | "dinner" | "snack";
   date: Date;
   totalCalories: number;
   foodItems: FoodLogItem[];
