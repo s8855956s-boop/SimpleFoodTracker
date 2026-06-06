@@ -30,150 +30,19 @@ const getWeekDates = (date: Date) => {
   });
 };
 
-export default function FoodPage() {
+type FoodPageProps = {
+  foodLogs: FoodLog[];
+};
+
+export default function FoodPage(props: FoodPageProps) {
   const insets = useSafeAreaInsets();
   const { height: windowHeight } = useWindowDimensions();
   const [selectedDate, setSelectedDate] = useState(() => new Date());
 
-  const foodLogs: FoodLog[] = [
-    {
-      id: 1,
-      date: new Date("2026-06-01"),
-      mealType: "breakfast",
-      totalCalories: 500,
-      foodItems: [
-        {
-          id: "1",
-          name: "Egg sandwich",
-          unit: "servings",
-          amount: 1,
-          gramsPerServing: 180,
-          caloriesPerServing: 300,
-          fatPerServing: 10,
-          carbPerServing: 30,
-          proteinPerServing: 15,
-          totalCalories: 300,
-          totalCarb: 30,
-          totalFat: 10,
-          totalProtein: 15,
-        },
-        {
-          id: "2",
-          name: "Chicken breast",
-          unit: "grams",
-          amount: 200,
-          gramsPerServing: 200,
-          caloriesPerServing: 200,
-          fatPerServing: 8,
-          carbPerServing: 20,
-          proteinPerServing: 10,
-          totalCalories: 200,
-          totalCarb: 20,
-          totalFat: 8,
-          totalProtein: 10,
-        },
-      ],
-    },
-    {
-      id: 2,
-      date: new Date("2026-06-01"),
-      mealType: "lunch",
-      totalCalories: 700,
-      foodItems: [
-        {
-          id: "3",
-          name: "Rice bowl",
-          unit: "grams",
-          amount: 300,
-          gramsPerServing: 300,
-          caloriesPerServing: 700,
-          fatPerServing: 20,
-          carbPerServing: 70,
-          proteinPerServing: 30,
-          totalCalories: 700,
-          totalCarb: 70,
-          totalFat: 20,
-          totalProtein: 30,
-        },
-      ],
-    },
-    {
-      id: 3,
-      date: new Date("2026-06-01"),
-      mealType: "dinner",
-      totalCalories: 650,
-      foodItems: [
-        {
-          id: "4",
-          name: "Grilled salmon",
-          unit: "grams",
-          amount: 250,
-          gramsPerServing: 250,
-          caloriesPerServing: 400,
-          fatPerServing: 12,
-          carbPerServing: 18,
-          proteinPerServing: 42,
-          totalCalories: 400,
-          totalCarb: 18,
-          totalFat: 12,
-          totalProtein: 42,
-        },
-        {
-          id: "5",
-          name: "Sweet potato",
-          unit: "grams",
-          amount: 150,
-          gramsPerServing: 150,
-          caloriesPerServing: 250,
-          fatPerServing: 1,
-          carbPerServing: 45,
-          proteinPerServing: 4,
-          totalCalories: 250,
-          totalCarb: 45,
-          totalFat: 1,
-          totalProtein: 4,
-        },
-      ],
-    },
-    {
-      id: 4,
-      date: new Date("2026-06-01"),
-      mealType: "snack",
-      totalCalories: 180,
-      foodItems: [
-        {
-          id: "6",
-          name: "Apple",
-          unit: "servings",
-          amount: 1,
-          gramsPerServing: 120,
-          caloriesPerServing: 90,
-          fatPerServing: 0,
-          carbPerServing: 23,
-          proteinPerServing: 1,
-          totalCalories: 90,
-          totalCarb: 23,
-          totalFat: 0,
-          totalProtein: 1,
-        },
-        {
-          id: "7",
-          name: "Greek yogurt",
-          unit: "grams",
-          amount: 100,
-          gramsPerServing: 100,
-          caloriesPerServing: 90,
-          fatPerServing: 3,
-          carbPerServing: 6,
-          proteinPerServing: 8,
-          totalCalories: 90,
-          totalCarb: 6,
-          totalFat: 3,
-          totalProtein: 8,
-        },
-      ],
-    },
-  ];
+  const foodLogs: FoodLog[] = props.foodLogs.map((log) => ({
+    ...log,
+    date: new Date(log.date),
+  }));
 
   const selectedFoodLogs = foodLogs.filter((log) =>
     isSameDate(log.date, selectedDate),

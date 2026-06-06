@@ -112,6 +112,12 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
     if (savedUnit) {
       handleUnitChange(savedItemIndex, savedUnit);
     }
+    router.setParams({
+      saved: undefined,
+      savedItemId: undefined,
+      portion: undefined,
+      unit: undefined,
+    });
   }, [
     saved,
     savedItemId,
@@ -124,7 +130,18 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
 
   const onPressNext = () => {
     const toBeSavedItems = props.foodItems.filter((item) => toggleItemIds.includes(item.id));
-    //想一下要怎麼把這些資料帶到MealLog頁面。
+    const foodItems = toBeSavedItems.map((item, index) => ({
+      id: item.id,
+      portion: portion[index] || 1,
+      unit: unit[index] || "servings",
+    }));
+    
+    router.replace({
+      pathname: "/mealLog",
+      params: {
+        toBeFetchedFoodItemsObjStr: JSON.stringify(foodItems),
+      }
+    })
   };
 
   return (
@@ -239,15 +256,7 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
         )}
       </ScrollView>
       {toggleItemIds.length > 0 && (
-        <TouchableOpacity style={styles.nextButton} onPress={() => {
-          router.push({
-            pathname: "/mealLog",
-            params: {
-              mealType,
-              date
-            }
-          })
-        }}>
+        <TouchableOpacity style={styles.nextButton} onPress={onPressNext}>
           <Text style={styles.addButtonText}>下一筆</Text>
         </TouchableOpacity>
       )}

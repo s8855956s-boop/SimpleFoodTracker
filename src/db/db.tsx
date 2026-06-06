@@ -14,6 +14,7 @@ let databasePromise: Promise<SQLite.SQLiteDatabase> | null = null;
 export async function getDatabase() {
   if (!databasePromise) {
     databasePromise = SQLite.openDatabaseAsync(DATABASE_NAME);
+    initializeDatabase()
   }
 
   return databasePromise;

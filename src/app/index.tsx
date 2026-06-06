@@ -33,7 +33,7 @@ export default function Index() {
 
   return (
     <View>
-      <FoodPage />
+      <FoodPage foodLogs={foodLogs} />
     </View>
   );
 }

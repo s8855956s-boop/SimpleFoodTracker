@@ -1,4 +1,4 @@
-import MealLogPage from "@/screens/mealLogPage/indes";
+import MealLogPage from "@/screens/mealLogPageScreen/index";
 import { View } from "react-native";
 
 export default function MealLog() {

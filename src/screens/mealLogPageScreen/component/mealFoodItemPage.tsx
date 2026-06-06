@@ -36,7 +36,7 @@ export default function MealFoodItemPage(item: FoodItemPageProps) {
                 calories: String(item.totalCalories),
                 totalFat: String(item.totalFat),
                 totalCarb: String(item.totalCarb),
-                protein: String(item.protein),
+                protein: String(item.totalProtein),
               },
             });
           }}
