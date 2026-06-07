@@ -12,11 +12,12 @@ type FoodItemPageProps = {
   onToggle?: () => void;
   handlePortionChange?: (newPortion: number) => void;
   handleUnitChange?: (newUnit: "grams" | "servings") => void;
+  onPressAddFood?: () => void;
 };
 
-export default function MealFoodItemPage(item: FoodItemPageProps) {
+export default function MealFoodItemPage(props: FoodItemPageProps) {
   const router = useRouter();
-  const foodLogItems = item.foodLogItems;
+  const foodLogItems = props.foodLogItems;
 
   return (
     <View style={styles.container}>
@@ -37,6 +38,7 @@ export default function MealFoodItemPage(item: FoodItemPageProps) {
                 totalFat: String(item.totalFat),
                 totalCarb: String(item.totalCarb),
                 protein: String(item.totalProtein),
+                isFromMealLog: "true",
               },
             });
           }}
@@ -55,11 +57,7 @@ export default function MealFoodItemPage(item: FoodItemPageProps) {
       <View style={styles.foodItemRow}>
         <TouchableOpacity
           style={styles.titleContainer && {paddingBottom: 20}}
-          onPress={() => {
-            router.push({
-              pathname: "/foodItemPage",
-            });
-          }}
+          onPress={props.onPressAddFood}
         >
           <Text style={{ color: "#111827", fontWeight: "bold" }}>新增食物</Text>
         </TouchableOpacity>

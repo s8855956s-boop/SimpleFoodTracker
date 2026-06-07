@@ -11,6 +11,7 @@ export type FoodItem = {
 
 export type FoodLogItem = {
   id: string;
+  foodLogId: number;
   name: string;
   unit: "grams" | "servings";
   amount: number;

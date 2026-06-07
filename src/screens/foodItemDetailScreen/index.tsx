@@ -29,6 +29,7 @@ export default function FoodItemDetailScreen() {
     totalFat: totalFatStr,
     totalCarb: totalCarbStr,
     protein: proteinStr,
+    isFromMealLog,
   } = useLocalSearchParams<{
     id: string;
     name: string;
@@ -39,6 +40,7 @@ export default function FoodItemDetailScreen() {
     totalFat: string;
     totalCarb: string;
     protein: string;
+    isFromMealLog?: string;
   }>();
   const [unit, setUnit] = useState<"grams" | "servings">(() =>
     getInitialUnit(unitProp),
@@ -90,7 +92,20 @@ export default function FoodItemDetailScreen() {
   }, [portionProp, unitProp]);
 
   const onSave = () => {
-    router.dismissTo({
+    if(isFromMealLog === "true") {
+      const specificItemLogFromItemDetailPage = {
+        id: id,
+        portion,
+        unit,
+      }
+      router.dismissTo({
+      pathname: "/mealLog",
+      params: {
+        specificItemLogFromItemDetailPage: JSON.stringify(specificItemLogFromItemDetailPage),
+      },
+    });
+    } else {
+      router.dismissTo({
       pathname: "/foodItemPage",
       params: {
         savedItemId: id,
@@ -99,6 +114,7 @@ export default function FoodItemDetailScreen() {
         unit,
       },
     });
+    }
   };
 
   return (

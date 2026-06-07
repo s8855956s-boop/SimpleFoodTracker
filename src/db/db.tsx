@@ -208,6 +208,7 @@ export async function getFoodLogsByDate(date: string) {
       .filter((item) => item.food_log_id === log.id)
       .map((item) => ({
         id: String(item.id),
+        foodLogId: item.food_log_id,
         name: item.name,
         unit: item.unit as FoodLogItem["unit"],
         amount: item.portion,
@@ -224,6 +225,74 @@ export async function getFoodLogsByDate(date: string) {
   }));
 }
 
+//saveFoodLog and saveFoodLogItems are not complete.
+export async function saveFoodLog(foodLog: Omit<FoodLog, "id"> & { id?: FoodLog["id"] }) {
+  const db = await getDatabase();
+  const result = await db.runAsync(
+    `INSERT INTO ${TABLES.foodLog} (id, meal_type, date, total_calories)
+     VALUES (?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        meal_type = excluded.meal_type,
+        date = excluded.date,
+        total_calories = excluded.total_calories`,
+    [
+      foodLog.id ? Number(foodLog.id) : null,
+      foodLog.mealType,
+      foodLog.date.toISOString(),
+      foodLog.totalCalories,
+    ],
+  );
+}
+
+export async function saveFoodLogItems(foodLogId: number, items: Omit<FoodLogItem, "id" | "foodLogId">[]) {
+  const db = await getDatabase();
+  await db.runAsync("BEGIN TRANSACTION");
+  try {
+    await db.runAsync(
+      `DELETE FROM ${TABLES.foodLogItem} WHERE food_log_id = ?`,
+      [foodLogId],
+    );
+    for (const item of items) {
+      await db.runAsync(
+        `INSERT INTO ${TABLES.foodLogItem} (
+          food_log_id,
+          name,
+          unit,
+          portion,
+          grams_per_serving,
+          calories_per_serving,
+          fat_per_serving,
+          carb_per_serving,
+          protein_per_serving,
+          total_calories,
+          total_fat,
+          total_carb,
+          protein
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          foodLogId,
+          item.name,
+          item.unit,
+          item.amount,
+          item.gramsPerServing,
+          item.caloriesPerServing,
+          item.fatPerServing,
+          item.carbPerServing,
+          item.proteinPerServing,
+          item.totalCalories,
+          item.totalFat,
+          item.totalCarb,
+          item.totalProtein
+        ]
+      );
+    }
+    await db.runAsync("COMMIT");
+  } catch (error) {
+    await db.runAsync("ROLLBACK");
+    throw error;
+  }
+}
+
 export async function getFoodItemByIds(ids: string[]) {
   if (ids.length === 0) {
     return [];
@@ -233,6 +302,7 @@ export async function getFoodItemByIds(ids: string[]) {
 
   const rows = await db.getAllAsync<{
     id: number;
+    foodLogId: number;
     name: string;
     grams_per_serving: number;
     calories: number;
@@ -243,6 +313,7 @@ export async function getFoodItemByIds(ids: string[]) {
   }>(
     `SELECT
       id,
+      food_log_id,
       name,
       grams_per_serving,
       calories,
@@ -257,6 +328,7 @@ export async function getFoodItemByIds(ids: string[]) {
 
   return rows.map((row) => ({
     id: String(row.id),
+    foodLogId: row.foodLogId,
     name: row.name,
     gramsPerServing: row.grams_per_serving,
     calories: row.calories,

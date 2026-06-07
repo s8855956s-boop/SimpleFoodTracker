@@ -1,10 +1,33 @@
 import { getFoodItemByIds } from "@/db/db";
 import { FoodLogItem } from "@/type/type";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MealFoodItemPage from "./component/mealFoodItemPage";
 import MealTotalNutritionFacts from "./component/mealTotalNutritionFacts";
+
+type FoodItemSelection = {
+  id: string;
+  portion: number;
+  unit: "grams" | "servings";
+};
+
+const parseRouteJson = <T,>(
+  param: string | string[] | undefined,
+): T | undefined => {
+  const value = Array.isArray(param) ? param[0] : param;
+
+  if (!value || value === "undefined") {
+    return undefined;
+  }
+
+  try {
+    return JSON.parse(value) as T;
+  } catch (error) {
+    console.error("Failed to parse meal log route parameter", error);
+    return undefined;
+  }
+};
 
 // const foodLogItems: FoodLogItem[] = [
 //   {
@@ -42,16 +65,27 @@ import MealTotalNutritionFacts from "./component/mealTotalNutritionFacts";
 export default function MealLogPage() {
   const [foodLogItems, setFoodLogItems] = useState<FoodLogItem[]>([]);
   
-  const { toBeFetchedFoodItemsObjStr } = useLocalSearchParams<{ toBeFetchedFoodItemsObjStr: string }>();
+  const { toBeFetchedFoodItemsObjStr, specificItemLogFromItemDetailPage } =
+    useLocalSearchParams<{
+      toBeFetchedFoodItemsObjStr?: string | string[];
+      specificItemLogFromItemDetailPage?: string | string[];
+    }>();
 
   useEffect(() => {
+    const toBeFetchedFoodItems =
+      parseRouteJson<FoodItemSelection[]>(toBeFetchedFoodItemsObjStr);
+
+    if (!Array.isArray(toBeFetchedFoodItems)) {
+      return;
+    }
+
     const fetchFoodItems = async () => {
-      const toBeFetchedFoodItems: { id: string; portion: number; unit: "grams" | "servings" }[] = JSON.parse(toBeFetchedFoodItemsObjStr);
       const fetchedItems = (await getFoodItemByIds(toBeFetchedFoodItems.map(item => item.id))).map(item => {
         const unit = toBeFetchedFoodItems.find(i => i.id === item.id)?.unit || "servings";
         const portion = toBeFetchedFoodItems.find(i => i.id === item.id)?.portion || 1;
         return {
           id: item.id,
+          foodLogId: item.foodLogId,
           name: item.name,
           unit: unit as "grams" | "servings",
           gramsPerServing: item.gramsPerServing,
@@ -70,6 +104,42 @@ export default function MealLogPage() {
     };
     fetchFoodItems();
   }, [toBeFetchedFoodItemsObjStr]);
+
+  useEffect(() => {
+    const itemFromDetailPageObj =
+      parseRouteJson<FoodItemSelection>(specificItemLogFromItemDetailPage);
+
+    if (itemFromDetailPageObj?.id) {
+      const fetchFoodItem = async () => {
+        const fetchedItems = (await getFoodItemByIds([itemFromDetailPageObj.id])).map(item => {
+          const unit = itemFromDetailPageObj.unit || "servings";
+          const portion = itemFromDetailPageObj.portion || 1;
+          return {
+            id: item.id,
+            foodLogId: item.foodLogId,
+            name: item.name,
+            unit: unit as "grams" | "servings",
+            gramsPerServing: item.gramsPerServing,
+            caloriesPerServing: item.calories,
+            fatPerServing: item.totalFat,
+            carbPerServing: item.totalCarb,
+            proteinPerServing: item.protein,
+            totalCalories: item.calories * portion,
+            totalFat: item.totalFat * portion,
+            totalCarb: item.totalCarb * portion,
+            totalProtein: item.protein * portion,
+            amount: portion,
+          };
+        });
+
+        setFoodLogItems(prevItems => prevItems.map(prevItem => {
+          const detailItem = fetchedItems.find(item => item.id === prevItem.id);
+          return detailItem ?? prevItem;
+        }));
+      };
+      fetchFoodItem();
+    }
+  }, [specificItemLogFromItemDetailPage]);
 
   const totalCalories = foodLogItems.reduce(
     (sum, item) => sum + item.totalCalories * item.amount,
@@ -91,6 +161,12 @@ export default function MealLogPage() {
     0,
   );
 
+  const onPressAddFood = () => {
+    router.push({
+      pathname: "/foodItemPage",
+      params: { previouslySavedFoodItemsObjStr: toBeFetchedFoodItemsObjStr}
+    });
+  }
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 10 }}>
@@ -103,8 +179,11 @@ export default function MealLogPage() {
         protein={totalProtein}
       />
       <View style={styles.foodItemContainer}>
-        <MealFoodItemPage foodLogItems={foodLogItems} />
+        <MealFoodItemPage foodLogItems={foodLogItems} onPressAddFood={onPressAddFood} />
       </View>
+        <TouchableOpacity style={styles.nextButton} onPress={() => {}}>
+          <Text style={styles.addButtonText}>完成</Text>
+        </TouchableOpacity>
     </View>
   );
 }
@@ -121,5 +200,22 @@ const styles = StyleSheet.create({
     width: "90%",
     alignItems: "flex-start",
     flexDirection: "column",
+  },
+  addButtonText: {
+    color: "#FFFFFF",
+    fontSize: 22,
+    fontWeight: "700",
+    lineHeight: 22,
+  },
+  nextButton: {
+    height: 36,
+    paddingHorizontal: 15,
+    width: "45%",
+    borderRadius: 10,
+    alignItems: "center",
+    alignSelf: "center",
+    justifyContent: "center",
+    backgroundColor: "#111827",
+    marginTop: 10,
   },
 });

@@ -29,7 +29,8 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
     portion: savedPortion,
     unit: savedUnit,
     mealType,
-    date
+    date,
+    previouslySavedFoodItemsObjStr,
   } = useLocalSearchParams<{
     saved?: string;
     savedItemId?: string;
@@ -37,6 +38,7 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
     unit?: "grams" | "servings";
     mealType: string;
     date: string;
+    previouslySavedFoodItemsObjStr: string;
   }>();
 
   const handlePortionChange = useCallback(
@@ -130,13 +132,23 @@ export default function FoodItemPageScreen(props: FoodItemPageProps) {
 
   const onPressNext = () => {
     const toBeSavedItems = props.foodItems.filter((item) => toggleItemIds.includes(item.id));
-    const foodItems = toBeSavedItems.map((item, index) => ({
+    let previouslySavedFoodItems: { id: string; portion: number; unit: "grams" | "servings" }[] = [];
+    if (previouslySavedFoodItemsObjStr != null && previouslySavedFoodItemsObjStr !== "undefined") {
+      const previouslySavedFoodItemsObj: { id: string; portion: number; unit: "grams" | "servings" }[] = JSON.parse(previouslySavedFoodItemsObjStr);
+      previouslySavedFoodItems = previouslySavedFoodItemsObj.map((savedItem) => ({
+        id: savedItem.id,
+        portion: savedItem.portion,
+        unit: savedItem.unit,
+      }));
+    }
+    const toBeSavedItemObjs = toBeSavedItems.map((item, index) => ({
       id: item.id,
       portion: portion[index] || 1,
       unit: unit[index] || "servings",
     }));
+    const foodItems = [...previouslySavedFoodItems, ...toBeSavedItemObjs];
     
-    router.replace({
+    router.dismissTo({
       pathname: "/mealLog",
       params: {
         toBeFetchedFoodItemsObjStr: JSON.stringify(foodItems),
