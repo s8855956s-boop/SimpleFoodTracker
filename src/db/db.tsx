@@ -302,7 +302,6 @@ export async function getFoodItemByIds(ids: string[]) {
 
   const rows = await db.getAllAsync<{
     id: number;
-    foodLogId: number;
     name: string;
     grams_per_serving: number;
     calories: number;
@@ -313,7 +312,6 @@ export async function getFoodItemByIds(ids: string[]) {
   }>(
     `SELECT
       id,
-      food_log_id,
       name,
       grams_per_serving,
       calories,
@@ -328,7 +326,7 @@ export async function getFoodItemByIds(ids: string[]) {
 
   return rows.map((row) => ({
     id: String(row.id),
-    foodLogId: row.foodLogId,
+    foodLogId: row.food_log_id,
     name: row.name,
     gramsPerServing: row.grams_per_serving,
     calories: row.calories,
